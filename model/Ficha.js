@@ -1,8 +1,8 @@
 export default class Ficha {
-  constructor(id, nome, ...exercicios) {
+  constructor(id, nome, exercicios) {
     this._id = id;
     this._nome = nome;
-    this._exercicios = [].concat(exercicios);
+    this._exercicios = exercicios;
   }
   get id() {
     return this._id;

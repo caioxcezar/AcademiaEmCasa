@@ -17,9 +17,9 @@ export const setFicha = (ficha) => {
 
 const loadFichas = () => {
   return [
-    new Ficha(1, "Segunda", 1, 2, 3),
-    new Ficha(2, "Terça", 1, 2, 3, 4, 5),
-    new Ficha(3, "Quarta"),
-    new Ficha(4, "Quinta", 1),
+    new Ficha(1, "Segunda", [1, 2, 3]),
+    new Ficha(2, "Terça", [1, 2, 3, 4, 5]),
+    new Ficha(3, "Quarta", []),
+    new Ficha(4, "Quinta", [1]),
   ];
 };
