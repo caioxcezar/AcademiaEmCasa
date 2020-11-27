@@ -13,7 +13,4 @@ export default class Ficha {
   get exercicios() {
     return [...this._exercicios];
   }
-  get nome() {
-    return this._carga;
-  }
 }

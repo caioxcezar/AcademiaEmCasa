@@ -3,17 +3,17 @@ import { View } from "react-native";
 import styles from "./FichaStyle";
 import { Picker } from "@react-native-picker/picker";
 import { Button, Text, Input } from "react-native-elements";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import FichaModel from "../../model/Ficha";
+import { setFicha } from "../../AppAction";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 
 class Ficha extends React.Component {
   state = {
+    nome: "",
     agrupamento: "",
     exercicio: "",
-    carga: "",
-    series: "",
-    repeticoes: "",
-    key: null,
+    exercicios: [],
     tpAcao: "",
   };
   constructor(props) {
@@ -33,18 +33,9 @@ class Ficha extends React.Component {
       <Picker.Item key={index} label={e} value={e} />
     ));
   };
-  salvar = async () => {
-    let { agrupamento, exercicio, carga, series, repeticoes } = this.state;
-    let ficha = new FichaModel(
-      2,
-      agrupamento,
-      exercicio,
-      nome,
-      series,
-      repeticoes
-    );
-    //await AsyncStorage.mergeItem("exercicios", JSON.stringify([ficha]));
-    console.log(JSON.stringify(ficha));
+  salvar = () => {
+    let { nome, exercicios } = this.state;
+    setFicha(new FichaModel(this.props.fichas.length, nome, exercicios));
   };
   render() {
     let { tpAcao, agrupamento, exercicio } = this.state;
@@ -54,7 +45,7 @@ class Ficha extends React.Component {
         <Input
           keyboardType="numeric"
           onChangeText={(text) => {
-            this.setState({ nome: this.onlyNumeric(text) });
+            this.setState({ nome: text });
           }}
           value={this.state.nome}
         />
@@ -86,4 +77,12 @@ class Ficha extends React.Component {
     );
   }
 }
-export default Ficha;
+function mapStateToProps(state) {
+  return {
+    fichas: state.fichas,
+  };
+}
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({ setFicha }, dispatch);
+}
+export default connect(mapStateToProps, matchDispatchToProps)(Ficha);
