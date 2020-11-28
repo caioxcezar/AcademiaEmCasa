@@ -1,4 +1,5 @@
-import { createStore } from "redux";
+import { applyMiddleware, createStore } from "redux";
 import { appReducer } from "./AppReducer";
+import thunk from "redux-thunk";
 
-export default store = createStore(appReducer);
+export default store = createStore(appReducer, applyMiddleware(thunk));

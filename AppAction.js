@@ -1,12 +1,4 @@
-import Ficha from "./model/Ficha";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-export const getFichas = () => {
-  return {
-    type: "GET_FICHAS",
-    payload: loadFichas(),
-  };
-};
 
 export const setFicha = (ficha) => {
   return {
@@ -15,11 +7,17 @@ export const setFicha = (ficha) => {
   };
 };
 
-const loadFichas = () => {
-  return [
-    new Ficha(1, "Segunda", [1, 2, 3]),
-    new Ficha(2, "Terça", [1, 2, 3, 4, 5]),
-    new Ficha(3, "Quarta", []),
-    new Ficha(4, "Quinta", [1]),
-  ];
+const getFichas = (fichas) => {
+  return {
+    type: "GET_FICHAS",
+    payload: fichas,
+  };
+};
+
+export const asyncGetFichas = () => {
+  return async () =>
+    await AsyncStorage.getItem("fichas")
+      .then((res) => (!res ? [] : JSON.parse(res)))
+      .then((arr) => getFichas(arr.map((e) => e._id, e._nome, e._exercicios)))
+      .catch((e) => {});
 };

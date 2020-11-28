@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Fichas from "../fichas/Fichas";
 import Exercicios from "../exercicios/Exercicios";
 
-export default Home = () => {
+export default Home = ({ navigation }) => {
   const [values, setValues] = useState({
     tabFichas: [styles.colSm, styles.colSmSelected],
     tabExercicios: [styles.colSm],
@@ -43,9 +43,7 @@ export default Home = () => {
             name="pluscircle"
             size={65}
             color="#d14048"
-            onPress={() =>
-              this.props.navigation.navigate("Ficha", { tpAcao: "Salvar" })
-            }
+            onPress={() => navigation.navigate("Ficha", { tpAcao: "Salvar" })}
           />
         </View>
       </View>
