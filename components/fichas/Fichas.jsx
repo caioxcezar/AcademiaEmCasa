@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Pressable } from "react-native";
 import { ListItem } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,9 +19,8 @@ export default Fichas = (props) => {
     if (selectedIndex == 1) dispatch(deleteFicha(fichas, value));
   };
 
-  selectIndex = (selectedIndex) => {
-    console.log(selectedIndex);
-    //this.setState({selectedIndex})
+  selectIndex = (ficha) => {
+    props.navigate("FazerExercicios", { ficha });
   };
 
   return (
@@ -29,12 +29,14 @@ export default Fichas = (props) => {
         const buttons = ["Editar", "Apagar"];
         return (
           <ListItem key={i} bottomDivider>
-            <ListItem.Content onPress={selectIndex}>
-              <ListItem.Title>{l.id + " " + l.nome}</ListItem.Title>
-              <ListItem.Subtitle>
-                {"Quantidade de Exercicios: " + l.exercicios.length}
-              </ListItem.Subtitle>
-            </ListItem.Content>
+            <Pressable onPress={() => selectIndex(l)}>
+              <ListItem.Content>
+                <ListItem.Title>{l.id + " " + l.nome}</ListItem.Title>
+                <ListItem.Subtitle>
+                  {"Quantidade de Exercicios: " + l.exercicios.length}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+            </Pressable>
             <ListItem.ButtonGroup
               onPress={(index) => actionIndex(index, l)}
               buttons={buttons}

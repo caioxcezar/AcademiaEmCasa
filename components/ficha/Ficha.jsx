@@ -32,6 +32,7 @@ export default Ficha = ({ navigation, route }) => {
   });
 
   useEffect(() => {
+    navigation.setOptions({ title: route.params.tpAcao + " Ficha" });
     if (!route.params.ficha)
       setValues({
         ...values,
@@ -77,7 +78,7 @@ export default Ficha = ({ navigation, route }) => {
 
     if (!exercicio || !agrupamento)
       setModal({
-        ...values,
+        ...valuesModal,
         visible: true,
         mesage: "Selecione um Agrupamento e Exercicio.",
       });
@@ -95,14 +96,14 @@ export default Ficha = ({ navigation, route }) => {
     let fullEx = [];
     if (nome == "") {
       setModal({
-        ...values,
+        ...valuesModal,
         visible: true,
         mesage: "Informe um nome",
       });
       return;
     } else if (exercicios.length < 1) {
       setModal({
-        ...values,
+        ...valuesModal,
         visible: true,
         mesage: "Informe um exercicio",
       });
@@ -128,7 +129,7 @@ export default Ficha = ({ navigation, route }) => {
         break;
       default:
         setModal({
-          ...values,
+          ...valuesModal,
           visible: true,
           mesage: "Erro ao Salvar",
         });
@@ -148,7 +149,6 @@ export default Ficha = ({ navigation, route }) => {
       <View style={styles.container}>
         <Text>Nome: </Text>
         <Input
-          keyboardType="numeric"
           onChangeText={(text) => setValues({ ...values, nome: text })}
           value={values.nome}
         />

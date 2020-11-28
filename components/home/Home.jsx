@@ -15,6 +15,7 @@ export default Home = ({ navigation }) => {
   currentTab = (tab) => {
     switch (tab) {
       case 0:
+        navigation.setOptions({ title: "Fichas Cadastradas" });
         setValues({
           ...values,
           tabFichas: [styles.colSm, styles.colSmSelected],
@@ -23,6 +24,7 @@ export default Home = ({ navigation }) => {
         });
         break;
       case 1:
+        navigation.setOptions({ title: "Exercicios Disponiveis" });
         setValues({
           ...values,
           tabFichas: [styles.colSm],
