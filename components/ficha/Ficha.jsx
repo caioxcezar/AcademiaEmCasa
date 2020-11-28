@@ -7,7 +7,8 @@ import { ScrollView } from "react-native-gesture-handler";
 
 import styles from "./FichaStyle";
 import FichaModel from "../../model/Ficha";
-import { setFicha } from "../../AppAction";
+import ExercicioFicha from "../../model/ExercicioFicha";
+import { setFicha, editFicha } from "../../AppAction";
 import Agrupamentos from "../../data";
 
 export default Ficha = ({ navigation, route }) => {
@@ -31,13 +32,27 @@ export default Ficha = ({ navigation, route }) => {
   });
 
   useEffect(() => {
-    setValues({
-      ...values,
-      tpAcao: route.params.tpAcao,
-      lstAgrupamento: Agrupamentos.map((e) => (
-        <Picker.Item key={e.id} label={e.nome} value={e.id} />
-      )),
-    });
+    if (!route.params.ficha)
+      setValues({
+        ...values,
+        tpAcao: route.params.tpAcao,
+        lstAgrupamento: Agrupamentos.map((e) => (
+          <Picker.Item key={e.id} label={e.nome} value={e.id} />
+        )),
+      });
+    else {
+      setValues({
+        ...values,
+        tpAcao: route.params.tpAcao,
+        lstAgrupamento: Agrupamentos.map((e) => (
+          <Picker.Item key={e.id} label={e.nome} value={e.id} />
+        )),
+        exercicios: route.params.ficha.exercicios.map(
+          (e, i) => new ExercicioFicha(i, e.id, e.idAgrupamento)
+        ),
+        nome: route.params.ficha.nome,
+      });
+    }
   }, []);
 
   changeAgrupamento = (id) => {
@@ -69,39 +84,56 @@ export default Ficha = ({ navigation, route }) => {
     else
       setValues({
         ...values,
-        exercicios: [].concat(exercicios, {
-          id: exercicios.length + 1,
-          agrupamento,
-          exercicio,
-        }),
+        exercicios: [].concat(exercicios, [
+          new ExercicioFicha(exercicios.length + 1, exercicio, agrupamento),
+        ]),
       });
   };
 
-  const actions = {
-    salvar: () => {
-      let { nome, exercicios } = values;
-      if (nome == "")
-        setModal({
-          ...values,
-          visible: true,
-          mesage: "Informe um nome",
-        });
-      else if (exercicios.length < 1)
-        setModal({
-          ...values,
-          visible: true,
-          mesage: "Informe um exercicio",
-        });
-      else {
-        let fullEx = [];
-        exercicios.forEach((e, i) => {
-          let ag = Agrupamentos.filter((agr) => agr.id == e.agrupamento)[0];
-          fullEx.push(ag.exercicios.filter((exe) => exe.id == e.exercicio)[0]);
-        });
-        dispatch(setFicha(new FichaModel(fichas.length + 1, nome, fullEx)));
+  actions = (action) => {
+    let { nome, exercicios } = values;
+    let fullEx = [];
+    if (nome == "") {
+      setModal({
+        ...values,
+        visible: true,
+        mesage: "Informe um nome",
+      });
+      return;
+    } else if (exercicios.length < 1) {
+      setModal({
+        ...values,
+        visible: true,
+        mesage: "Informe um exercicio",
+      });
+      return;
+    }
+
+    exercicios.forEach((e, i) => {
+      let ag = Agrupamentos.filter((agr) => agr.id == e.agrupamento)[0];
+      fullEx.push(ag.exercicios.filter((exe) => exe.id == e.exercicio)[0]);
+    });
+    switch (action) {
+      case "salvar":
+        dispatch(
+          setFicha(fichas, new FichaModel(fichas.length + 1, nome, fullEx))
+        );
         navigation.goBack();
-      }
-    },
+        break;
+      case "editar":
+        dispatch(
+          editFicha(fichas, new FichaModel(route.params.ficha.id, nome, fullEx))
+        );
+        navigation.goBack();
+        break;
+      default:
+        setModal({
+          ...values,
+          visible: true,
+          mesage: "Erro ao Salvar",
+        });
+        break;
+    }
   };
 
   apagarList = (item) => {
@@ -167,7 +199,7 @@ export default Ficha = ({ navigation, route }) => {
         <View style={styles.buttom}>
           <Button
             title={values.tpAcao}
-            onPress={() => actions[values.tpAcao.toLocaleLowerCase()]()}
+            onPress={() => actions(values.tpAcao.toLocaleLowerCase())}
           />
         </View>
       </View>

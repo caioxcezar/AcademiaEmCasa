@@ -19,7 +19,7 @@ export default Home = ({ navigation }) => {
           ...values,
           tabFichas: [styles.colSm, styles.colSmSelected],
           tabExercicios: [styles.colSm],
-          tabCurrent: <Fichas />,
+          tabCurrent: <Fichas navigate={navigation.navigate} />,
         });
         break;
       case 1:

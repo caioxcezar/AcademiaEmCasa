@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { ListItem } from "react-native-elements";
 import { ScrollView } from "react-native-gesture-handler";
 import { useDispatch, useSelector } from "react-redux";
-import { asyncGetFichas } from "../../AppAction";
+import { asyncGetFichas, deleteFicha } from "../../AppAction";
 
-export default Fichas = () => {
+export default Fichas = (props) => {
   const fichas = useSelector((state) => state.fichas);
   const dispatch = useDispatch();
 
@@ -12,9 +12,10 @@ export default Fichas = () => {
     dispatch(asyncGetFichas());
   }, []);
 
-  actionIndex = (selectedIndex) => {
-    console.log(selectedIndex);
-    //this.setState({selectedIndex})
+  actionIndex = (selectedIndex, value) => {
+    if (selectedIndex == 0)
+      props.navigate("Ficha", { tpAcao: "Editar", ficha: value });
+    if (selectedIndex == 1) dispatch(deleteFicha(fichas, value));
   };
 
   selectIndex = (selectedIndex) => {
@@ -34,7 +35,10 @@ export default Fichas = () => {
                 {"Quantidade de Exercicios: " + l.exercicios.length}
               </ListItem.Subtitle>
             </ListItem.Content>
-            <ListItem.ButtonGroup onPress={actionIndex} buttons={buttons} />
+            <ListItem.ButtonGroup
+              onPress={(index) => actionIndex(index, l)}
+              buttons={buttons}
+            />
           </ListItem>
         );
       })}
