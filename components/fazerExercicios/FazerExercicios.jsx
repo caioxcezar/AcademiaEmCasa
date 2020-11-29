@@ -4,36 +4,38 @@ import { Card } from "react-native-elements";
 import { Entypo } from "@expo/vector-icons";
 
 import styles from "./FazerExerciciosStyle";
+import { useInterval } from "../../utils";
 
 export default FazerExercicios = ({ navigation, route }) => {
+  let interval;
   const [values, setValues] = useState({
     ficha: route.params.ficha,
     exercicioAtual: 0,
   });
 
-  const [timer, setTimer] = useState({
-    icon: "controller-play",
-    minutos: 1,
-    segundos: 30,
-  });
+  const [icon, setIcon] = useState("controller-play");
+  const [segundos, setSegundos] = useState(30);
+  const [minutos, setMinutos] = useState(1);
 
   useEffect(() => {
     navigation.setOptions({
       title: "Exercicios da Ficha " + route.params.ficha.nome,
     });
+    return () => clearInterval(interval);
   }, []);
 
   timerAction = () => {
-    if (timer.icon == "controller-play") {
-      setTimer({
-        ...timer,
-        icon: "stopwatch",
-      });
+    if (icon == "controller-play") {
+      setIcon("stopwatch");
+      interval = setInterval(() => {
+        //testando a execução do timer
+        console.log("timer");
+        setSegundos((segundos) => segundos - 1);
+      }, 1000);
     } else {
-      setTimer({
-        ...timer,
-        icon: "controller-play",
-      });
+      //setIcon("controller-play");
+      //clearInterval não esta funcionando
+      clearInterval(interval);
     }
   };
 
@@ -68,9 +70,9 @@ export default FazerExercicios = ({ navigation, route }) => {
             timerAction();
           }}
         >
-          <Entypo name={timer.icon} size={30} color="black" />
+          <Entypo name={icon} size={30} color="black" />
         </Pressable>
-        <Text>{timer.minutos + ":" + timer.segundos}</Text>
+        <Text>{minutos + ":" + segundos}</Text>
       </View>
     </Card>
   );

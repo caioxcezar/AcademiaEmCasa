@@ -13,4 +13,7 @@ export default class Ficha {
   get exercicios() {
     return [...this._exercicios];
   }
+  pushExercicio(exercicio) {
+    this._exercicios.push(exercicio);
+  }
 }

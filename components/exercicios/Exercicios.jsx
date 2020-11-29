@@ -1,18 +1,25 @@
 import React, { Fragment, useState } from "react";
 import { View, Text, Image, Pressable } from "react-native";
-import { Card } from "react-native-elements";
+import { BottomSheet, Card, ListItem } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
+import { Picker } from "@react-native-picker/picker";
+import { useDispatch, useSelector } from "react-redux";
 
 import styles from "./ExerciciosStyle";
 import Agrupamentos from "../../data";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
+import { editFicha } from "../../AppAction";
 
 export default Exercicios = () => {
+  const dispatch = useDispatch();
+
   const [values, setValues] = useState({
     agrupamentos: Agrupamentos,
     agrupamento: 0,
+    exercicio: null,
   });
+  const fichas = useSelector((state) => state.fichas);
+  const [modalVisible, setModalVisibility] = useState(false);
 
   changeAgrupamento = (value) => {
     if (!value)
@@ -23,6 +30,20 @@ export default Exercicios = () => {
         agrupamento: value,
         agrupamentos: Agrupamentos.filter((e) => e.id == value),
       });
+  };
+
+  showFichas = (ex) => {
+    if (fichas.length > 0) {
+      setModalVisibility(true);
+      setValues({ ...values, exercicio: ex });
+    }
+  };
+
+  addExercicio = (ficha) => {
+    let newFicha = ficha;
+    newFicha.pushExercicio(values.exercicio);
+    dispatch(editFicha(fichas, newFicha));
+    setModalVisibility(false);
   };
 
   return (
@@ -45,11 +66,7 @@ export default Exercicios = () => {
                 <Card key={ex.id}>
                   <Card.Title>
                     <Text>{ex.nome}</Text>
-                    <Pressable
-                      onPress={() => {
-                        console.log({ agrupamento: agr.id, exercicio: ex.id });
-                      }}
-                    >
+                    <Pressable onPress={() => showFichas(ex)}>
                       <Ionicons
                         style={{ alignSelf: "flex-end" }}
                         name="ios-add"
@@ -72,6 +89,26 @@ export default Exercicios = () => {
           </Fragment>
         ))}
       </ScrollView>
+      <BottomSheet isVisible={modalVisible}>
+        {fichas.map((l, i) => (
+          <Pressable key={l.id} onPress={() => addExercicio(l)}>
+            <ListItem>
+              <ListItem.Content>
+                <ListItem.Title>{l.nome}</ListItem.Title>
+              </ListItem.Content>
+            </ListItem>
+          </Pressable>
+        ))}
+        <Pressable onPress={() => setModalVisibility(false)}>
+          <ListItem containerStyle={{ backgroundColor: "red" }}>
+            <ListItem.Content>
+              <ListItem.Title style={{ color: "white" }}>
+                <Text>Cancelar</Text>
+              </ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        </Pressable>
+      </BottomSheet>
     </Fragment>
   );
 };
