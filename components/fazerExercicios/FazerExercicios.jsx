@@ -4,7 +4,6 @@ import { Card } from "react-native-elements";
 import { Entypo } from "@expo/vector-icons";
 
 import styles from "./FazerExerciciosStyle";
-import { useInterval } from "../../utils";
 
 export default FazerExercicios = ({ navigation, route }) => {
   let interval;
