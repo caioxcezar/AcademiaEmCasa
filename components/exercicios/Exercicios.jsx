@@ -65,15 +65,14 @@ export default Exercicios = () => {
               return (
                 <Card key={ex.id}>
                   <Card.Title>
-                    <Text>{ex.nome}</Text>
-                    <Pressable onPress={() => showFichas(ex)}>
-                      <Ionicons
-                        style={{ alignSelf: "flex-end" }}
-                        name="ios-add"
-                        size={24}
-                        color="black"
-                      />
-                    </Pressable>
+                    <View style={styles.title}>
+                      <Text style={styles.titleText}>{ex.nome}</Text>
+                      <View style={styles.addExercicios}>
+                        <Pressable onPress={() => showFichas(ex)}>
+                          <Ionicons name="ios-add" size={24} color="black" />
+                        </Pressable>
+                      </View>
+                    </View>
                   </Card.Title>
                   <View key={ex.id} style={styles.exercicio}>
                     <Image

@@ -7,6 +7,13 @@ export default StyleSheet.create({
     fontSize: 35,
     color: "#424242",
   },
+  title: {
+    flex: 1,
+    width: 400,
+    color: "#424242",
+  },
+  addExercicios: { right: 0, position: "absolute" },
+  titleText: { alignSelf: "center" },
   exercicio: {},
   imagem: {
     alignSelf: "center",

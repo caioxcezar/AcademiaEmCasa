@@ -41,23 +41,25 @@ export default FazerExercicios = ({ navigation, route }) => {
   cardExercicio = (ex) => (
     <Card style={styles.card} key={ex.id}>
       <Card.Title>
-        <Text>{ex.nome}</Text>
-        <Text>
-          {values.ficha.exercicios.length - 1 != values.exercicioAtual ? (
-            <Pressable
-              onPress={() =>
-                setValues({
-                  ...values,
-                  exercicioAtual: values.exercicioAtual + 1,
-                })
-              }
-            >
-              <Entypo name="controller-next" size={24} color="black" />
-            </Pressable>
-          ) : (
-            ""
-          )}
-        </Text>
+        <View style={styles.title}>
+          <Text style={styles.titleText}>{ex.nome}</Text>
+          <Text style={styles.addExercicios}>
+            {values.ficha.exercicios.length - 1 != values.exercicioAtual ? (
+              <Pressable
+                onPress={() =>
+                  setValues({
+                    ...values,
+                    exercicioAtual: values.exercicioAtual + 1,
+                  })
+                }
+              >
+                <Entypo name="controller-next" size={24} color="black" />
+              </Pressable>
+            ) : (
+              ""
+            )}
+          </Text>
+        </View>
       </Card.Title>
       <View key={ex.id} style={styles.exercicio}>
         <Image style={styles.imagem} resizeMode="cover" source={ex.imagem} />
