@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import { Card } from "react-native-elements";
 import { Entypo } from "@expo/vector-icons";
@@ -6,35 +6,62 @@ import { Entypo } from "@expo/vector-icons";
 import styles from "./FazerExerciciosStyle";
 
 export default FazerExercicios = ({ navigation, route }) => {
-  let interval;
+  const intervalRef = useRef();
+
+  const [icon, setIcon] = useState("controller-play");
+  const [segundos, setSegundos] = useState(30);
+  const [minutos, setMinutos] = useState(1);
+  let varMinutos = minutos;
+  let varSegundos = segundos;
+
   const [values, setValues] = useState({
     ficha: route.params.ficha,
     exercicioAtual: 0,
   });
 
-  const [icon, setIcon] = useState("controller-play");
-  const [segundos, setSegundos] = useState(30);
-  const [minutos, setMinutos] = useState(1);
-
   useEffect(() => {
     navigation.setOptions({
       title: "Exercicios da Ficha " + route.params.ficha.nome,
     });
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalRef.current);
   }, []);
 
   timerAction = () => {
-    if (icon == "controller-play") {
+    if (icon == "controller-play" && (segundos > 0 || minutos > 0)) {
       setIcon("stopwatch");
-      interval = setInterval(() => {
-        //testando a execução do timer
-        console.log("timer");
-        setSegundos((segundos) => segundos - 1);
+      const id = setInterval(() => {
+        if (varSegundos > 0) {
+          setSegundos(() => --varSegundos);
+        } else if (varMinutos > 0) {
+          setMinutos(() => --varMinutos);
+          varSegundos = 59;
+          setSegundos(() => varSegundos);
+        } else nextCard();
       }, 1000);
+      intervalRef.current = id;
     } else {
-      //setIcon("controller-play");
-      //clearInterval não esta funcionando
-      clearInterval(interval);
+      stopInterval();
+    }
+  };
+
+  stopInterval = () => {
+    setIcon("controller-play");
+    clearInterval(intervalRef.current);
+  };
+
+  resetInterval = () => {
+    stopInterval();
+    setMinutos(1);
+    setSegundos(30);
+  };
+
+  nextCard = () => {
+    if (values.ficha.exercicios.length - 1 != values.exercicioAtual) {
+      resetInterval();
+      setValues({
+        ...values,
+        exercicioAtual: values.exercicioAtual + 1,
+      });
     }
   };
 
@@ -45,14 +72,7 @@ export default FazerExercicios = ({ navigation, route }) => {
           <Text style={styles.titleText}>{ex.nome}</Text>
           <Text style={styles.addExercicios}>
             {values.ficha.exercicios.length - 1 != values.exercicioAtual ? (
-              <Pressable
-                onPress={() =>
-                  setValues({
-                    ...values,
-                    exercicioAtual: values.exercicioAtual + 1,
-                  })
-                }
-              >
+              <Pressable onPress={() => nextCard()}>
                 <Entypo name="controller-next" size={24} color="black" />
               </Pressable>
             ) : (
